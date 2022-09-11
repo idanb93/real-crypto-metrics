@@ -1,7 +1,7 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import { resolve } from "path";
-import { connectPostgreSqlDB } from "./services/sqlConnector";
+// import { connectPostgreSqlDB } from "./services/sqlConnector";
 
 dotenv.config({ path: resolve(__dirname, "../.env") });
 
