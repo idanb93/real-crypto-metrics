@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-let prisma = new PrismaClient({
+const prisma = new PrismaClient({
   datasources: { db: { url: process.env.POSTGRESQL_URL } },
 });
 

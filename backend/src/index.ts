@@ -5,7 +5,7 @@ import { connectPostgreSqlDB } from "./services/sqlConnector";
 
 dotenv.config({ path: resolve(__dirname, "../.env") });
 
-const PORT: number = process.env.PORT !== undefined ? parseInt(process.env.PORT) : 3000;
+const port: number = process.env.PORT !== undefined ? parseInt(process.env.PORT) : 3000;
 const app: Express = express();
 
 // if (!process.env.POSTGRESQL_URL) {
@@ -37,7 +37,7 @@ const app: Express = express();
 
 //   await connectPostgreSql();
 //   await connectBankDB();
-//   app.listen(PORT, () => console.log(`Running on ${PORT}`));
+//   app.listen(port, () => console.log(`Running on ${port}`));
 // })();
 
-app.listen(PORT, () => console.log(`Running on ${PORT}`));
+app.listen(port, () => console.log(`Running on ${port}`));
