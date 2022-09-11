@@ -1,6 +1,6 @@
-import prisma from "../sqlConnection/client";
+// import prisma from "../sqlConnection/client";
 
-export const connectPostgreSqlDB = async () => {
-  await prisma.$connect();
-  console.log("Prisma PostgreSQL Web Backend DB: connected");
-}
+// export const connectPostgreSqlDB = async () => {
+//   await prisma.$connect();
+//   console.log("Prisma PostgreSQL Web Backend DB: connected");
+// }
