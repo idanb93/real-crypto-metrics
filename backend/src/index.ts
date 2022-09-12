@@ -5,7 +5,12 @@ import { resolve } from "path";
 
 dotenv.config({ path: resolve(__dirname, "../.env") });
 
-const port: number = process.env.PORT !== undefined ? parseInt(process.env.PORT) : 3000;
+const isValidPort = () => {
+    const portAsNumber = Number(process.env.PORT);
+    return !isNaN(portAsNumber) && portAsNumber >= 0 && portAsNumber < 65536;
+}
+
+const port: number = isValidPort() ? Number(process.env.PORT) : 3000;
 const app: Express = express();
 
 // if (!process.env.POSTGRESQL_URL) {
@@ -36,7 +41,6 @@ const app: Express = express();
 //   configureRoutes(app);
 
 //   await connectPostgreSql();
-//   await connectBankDB();
 //   app.listen(port, () => console.log(`Running on ${port}`));
 // })();
 
