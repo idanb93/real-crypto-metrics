@@ -1,8 +1,12 @@
 import express, { Express } from 'express'
 import dotenv from 'dotenv'
 import { resolve } from 'path'
+import helmet from 'helmet'
+import bodyParser from 'body-parser'
+import cors from 'cors'
 // import { connectPostgreSqlDB } from "./services/sqlConnector"
 import { logger } from './logger/index'
+import { configureRoutes } from './routes'
 
 dotenv.config({ path: resolve(__dirname, '../.env') })
 
@@ -33,16 +37,14 @@ const app: Express = express()
 //   await connectPostgreSqlDB()
 // }
 
-// (async () => {
-//   app.use(helmet())
-//   app.use(cors())
-//   app.use(bodyParser.json({ limit: "5mb" }))
-//   app.use(bodyParser.urlencoded({ extended: true }))
+;(() => {
+  app.use(helmet())
+  app.use(cors())
+  app.use(bodyParser.json({ limit: '5mb' }))
+  app.use(bodyParser.urlencoded({ extended: true }))
 
-//   configureRoutes(app);
+  configureRoutes(app)
 
-//   await connectPostgreSql()
-//   app.listen(port, () => console.log(`Running on ${port}`))
-// })();
-
-app.listen(port, () => logger.info(`Running on ${port}`))
+  // await connectPostgreSql()
+  app.listen(port, () => logger.info(`Running on ${port}`))
+})()
