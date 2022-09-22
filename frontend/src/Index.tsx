@@ -1,9 +1,9 @@
-import React from "react"
-import { createRoot } from "react-dom/client"
-import { App } from "./App"
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import { App } from './App'
 
-const rootNode = document.getElementById("app")
+const rootNode: HTMLElement | null = document.getElementById('app')
 
-if (rootNode) {
+if (rootNode !== null && rootNode !== undefined) {
   createRoot(rootNode).render(<App />)
 }
