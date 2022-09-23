@@ -6,10 +6,11 @@ const getProjectContributers = async (
   response: Response
 ): Promise<void> => {
   try {
-    const { owner, repo } = reqeust.body
+    const { owner, repo, route } = reqeust.body
     const result: object | undefined = await _getProjectContributers(
       owner,
-      repo
+      repo,
+      route
     )
 
     if (result !== undefined) {
