@@ -1,30 +1,29 @@
-import { Request, Response } from 'express'
-import { _getProjectContributers } from '../services/github/index'
+import { Body, Controller, Post, Route, SuccessResponse } from 'tsoa'
+import {
+  GithubContributors,
+  GithubRequest
+} from '../interfaces/github-interfaces'
+import { logger } from '../logger'
+import { _getProjectContributers } from '../services/github'
 
-const getProjectContributers = async (
-  reqeust: Request,
-  response: Response
-): Promise<void> => {
-  try {
-    const { owner, repo, route } = reqeust.body
-    const result: object | undefined = await _getProjectContributers(
-      owner,
-      repo,
-      route
-    )
+@Route('/api/github')
+export class GithubController extends Controller {
+  @SuccessResponse('201', 'Created') // Custom success response
+  @Post('contributors')
+  // eslint-disable-next-line @typescript-eslint/space-before-function-paren
+  public async getProjectContributors(
+    @Body() requestBody: GithubRequest
+  ): Promise<GithubContributors[]> {
+    try {
+      const result: GithubContributors[] = await _getProjectContributers(
+        requestBody.owner,
+        requestBody.repo
+      )
 
-    if (result !== undefined) {
-      response.status(200).send({
-        message: 'contributers of the project was successfully fetched',
-        data: result
-      })
-    } else {
-      throw new Error('The data from the request is empty')
+      return result ?? []
+    } catch (err) {
+      logger.info('unable to get projects contributors')
+      throw err
     }
-  } catch (err) {
-    response.status(404).send({ message: 'owner or repo did not found!' })
   }
 }
-
-const GithubController = { getProjectContributers }
-export default GithubController

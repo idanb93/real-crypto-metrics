@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { projects } from './constants/constants'
+import { Project, _projects } from './constants/constants'
 
-import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
@@ -9,72 +8,66 @@ import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Avatar from '@mui/material/Avatar'
 
-import MuiAccordion, { AccordionProps } from '@mui/material/Accordion'
-import MuiAccordionSummary, {
-  AccordionSummaryProps
-} from '@mui/material/AccordionSummary'
-import MuiAccordionDetails from '@mui/material/AccordionDetails'
-import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp'
 import Typography from '@mui/material/Typography'
 import { sendDataToBackendServer } from './services/Backend'
-
-const Accordion = styled((props: AccordionProps) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  width: '30vw',
-  border: `1px solid ${theme.palette.divider}`,
-  '&:not(:last-child)': {
-    borderBottom: 0
-  },
-  '&:before': {
-    display: 'none'
-  }
-}))
-
-const AccordionSummary = styled((props: AccordionSummaryProps) => (
-  <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
-    {...props}
-  />
-))(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === 'dark'
-      ? 'rgba(255, 255, 255, .05)'
-      : 'rgba(0, 0, 0, .03)',
-  flexDirection: 'row-reverse',
-  '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-    transform: 'rotate(90deg)'
-  },
-  '& .MuiAccordionSummary-content': {
-    marginLeft: theme.spacing(1)
-  }
-}))
-
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: '1px solid rgba(0, 0, 0, .125)'
-}))
+import { Accordion } from './accordion/Accordion'
+import { AccordionSummary } from './accordion/AccordionSummary'
+import { AccordionDetails } from './accordion/AccordionDetails'
+import { GithubContributors } from './swagger/stubs'
 
 export const Dashboard: React.FC = () => {
-  const [contributors, setContributors] = useState([])
-  const [contributor, setContributor] = useState('')
-  const [projectOwner, setProjectOwner] = useState('')
+  const [contributors, setContributors] = useState<GithubContributors[]>([])
+  const [selectedContributor, setSelectedContributor] = useState('')
+  const [projects, setProjects] = useState<Project[]>([])
+  const [selectedProjectOwner, setSelectedProjectOwner] = useState('')
   const [expanded, setExpanded] = useState<string | false>('panel1')
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setContributor(event.target.value)
+  const handleChooseContributor = (event: SelectChangeEvent): void => {
+    setSelectedContributor(event.target.value)
   }
 
-  const handleChange2 =
+  const handleAccordionDrop =
     (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
       setExpanded(newExpanded ? panel : false)
     }
+
+  useEffect(() => {
+    setProjects(_projects)
+  }, [])
+
+  // useEffect(() => {
+  //   const getContributors = async (): Promise<GithubContributors[]> => {
+  //     try {
+  //       const res = await sendDataToBackendServer(selectedProjectOwner)
+  //       console.log('useEffect res', res)
+  //       return res
+  //     } catch (e) {
+  //       console.log(e)
+  //       return []
+  //     }
+  //   }
+
+  //   getContributors()
+  //     .then((res) => {
+  //       setContributors(res)
+  //     })
+  //     .catch((e) => console.log(e))
+  // }, [selectedProjectOwner])
+
+  const getContributors = async (projectOwner: string): Promise<void> => {
+    try {
+      const res = await sendDataToBackendServer(projectOwner)
+      setContributors(res)
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   return (
     <>
       <Accordion
         expanded={expanded === 'panel1'}
-        onChange={handleChange2('panel1')}
+        onChange={handleAccordionDrop('panel1')}
       >
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
           <Typography>Projects</Typography>
@@ -88,37 +81,47 @@ export const Dashboard: React.FC = () => {
               marginLeft: '1vw'
             }}
           >
-            <Box sx={{ width: 250 }}>
+            <Box sx={{ width: 260 }}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Projects</InputLabel>
+                <InputLabel
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                  id="demo-simple-select-label"
+                >
+                  Projects
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={projectOwner}
+                  value={selectedProjectOwner}
                   label="Projects"
-                  onChange={handleChange}
                 >
                   {projects.map((element, index) => (
                     <MenuItem
                       key={index}
                       value={element.owner}
-                      onClick={async () => {
-                        setProjectOwner(element.owner)
-                        const resArray = await sendDataToBackendServer(
-                          'contributors',
-                          element.owner
-                        )
-                        resArray
-                          ? setContributors(resArray)
-                          : alert('There was a problem with the request')
+                      onClick={() => {
+                        setSelectedProjectOwner(element.owner)
+                        getContributors(element.owner).catch((e) => {})
                       }}
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between'
                       }}
                     >
-                      {`${element.name}`}
-                      <Avatar alt="logo" src={element.logo} />
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          width: '11vw'
+                        }}
+                      >
+                        <div
+                          style={{ display: 'flex', alignItems: 'center' }}
+                        >{`${element.name}`}</div>
+                        <div>
+                          <Avatar alt="logo" src={element.logo} />
+                        </div>
+                      </div>
                     </MenuItem>
                   ))}
                 </Select>
@@ -126,32 +129,44 @@ export const Dashboard: React.FC = () => {
             </Box>
 
             {contributors.length > 0 ? (
-              <Box sx={{ width: 250, marginLeft: '1vw' }}>
+              <Box sx={{ width: 260, marginLeft: '1vw' }}>
                 <FormControl fullWidth>
                   <InputLabel id="demo-simple-select-label">
-                    Contributers
+                    Contributors
                   </InputLabel>
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={contributor}
-                    label="Contributers"
-                    onChange={handleChange}
+                    value={selectedContributor}
+                    label="Contributors"
+                    onChange={handleChooseContributor}
                   >
                     {contributors.map((element, index) => (
                       <MenuItem
                         key={index}
                         value={element.login}
                         onClick={() => {
-                          window.open(element.html_url)
+                          window.open(element.htmlUrl)
                         }}
                         style={{
                           display: 'flex',
                           justifyContent: 'space-between'
                         }}
                       >
-                        {`${element.login}`}
-                        <Avatar alt={element.login} src={element.avatar_url} />
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            width: '11vw'
+                          }}
+                        >
+                          <div
+                            style={{ display: 'flex', alignItems: 'center' }}
+                          >{`${element.login}`}</div>
+                          <div>
+                            <Avatar alt="login_name" src={element.avatarUrl} />
+                          </div>
+                        </div>
                       </MenuItem>
                     ))}
                   </Select>

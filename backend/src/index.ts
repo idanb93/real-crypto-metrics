@@ -6,7 +6,9 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 // import { connectPostgreSqlDB } from "./services/sqlConnector"
 import { logger } from './logger/index'
-import { configureRoutes } from './routes'
+import * as swaggerJson from './swagger/swagger.json'
+import * as swaggerUI from 'swagger-ui-express'
+import { RegisterRoutes } from './swagger/routes'
 
 dotenv.config({ path: resolve(__dirname, '../.env') })
 
@@ -43,8 +45,14 @@ const app: Express = express()
   app.use(bodyParser.json({ limit: '5mb' }))
   app.use(bodyParser.urlencoded({ extended: true }))
 
-  configureRoutes(app)
-
   // await connectPostgreSql()
+  RegisterRoutes(app)
+
+  app.use(
+    ['/openapi', '/docs', '/swagger'],
+    swaggerUI.serve,
+    swaggerUI.setup(swaggerJson)
+  )
+
   app.listen(port, () => logger.info(`Running on ${port}`))
 })()

@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack serve",
-    "start": "webpack-dev-server",
+    "start": "npm run codegen-build-stubs && webpack-dev-server",
+    "start-dev": "node scripts/copy-local-spec.js && npm run codegen-build-stubs && webpack-dev-server",
     "build": "webpack --mode production --progress --hide-modules",
     "tscheck": "tsc",
     "lint": "eslint --ext .js,.ts,.jsx,.tsx src",
     "prettier": "prettier --write ./src",
     "format": "npm run lint --fix & npm run prettier",
+    "codegen-build-stubs": "java -jar ./scripts/swagger-codegen-cli-3.0.30.jar generate -l typescript-fetch -i ./src/swagger/swagger.json -o ./src/swagger/stubs --additional-properties=supportES6=true && node ./scripts/fix-gen-api.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Idan Bardugo",
@@ -50,8 +52,10 @@
     "@mui/icons-material": "^5.10.6",
     "@mui/material": "^5.10.6",
     "axios": "^0.27.2",
+    "isomorphic-fetch": "^3.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.4.1"
+    "react-router-dom": "^6.4.1",
+    "url": "^0.11.0"
   }
 }

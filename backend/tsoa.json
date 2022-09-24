@@ -1,0 +1,19 @@
+{
+  "entryFile": "src/index.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/**/*Controller.ts"],
+  "schemes": ["http"],
+  "spec": {
+    "host": "localhost:3001",
+    "outputDirectory": "./src/swagger",
+    "specVersion": 3,
+    "securityDefinitions": {
+      "basic": {
+        "type": "basic"
+      }
+    }
+  },
+  "routes": {
+    "routesDir": "./src/swagger"
+  }
+}

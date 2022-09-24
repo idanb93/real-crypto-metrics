@@ -1,6 +1,11 @@
-export const BACKEND_URL: string = 'http://localhost:3001'
-
-export const projects = [
+export interface Project {
+  id: number
+  name: string
+  logo: string
+  owner: string
+  repo: string
+}
+export const _projects: Project[] = [
   {
     id: 1,
     name: 'Solana',
