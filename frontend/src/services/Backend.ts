@@ -1,8 +1,8 @@
-import { _projects } from '../constants/constants'
-import { DefaultApi, GithubContributors } from '../swagger/stubs'
+import { DefaultApi, GithubContributors, Project } from '../swagger/stubs'
 
 export const sendDataToBackendServer = async (
-  projectOwner: string
+  projectOwner: string,
+  projects: Project[]
 ): Promise<GithubContributors[]> => {
   try {
     // const response = await axios({
@@ -18,11 +18,21 @@ export const sendDataToBackendServer = async (
       await new DefaultApi().getProjectContributors({
         owner: projectOwner,
         repo:
-          _projects.find((project) => project.owner === projectOwner)?.repo ??
-          ''
+          projects.find((project) => project.owner === projectOwner)?.repo ?? ''
       })
 
-    console.log('sendDataToBackendServer response: ', response)
+    console.log('getProjectContributors response: ', response)
+
+    return response
+  } catch (err) {
+    return []
+  }
+}
+
+export const getInitialDataFromBackendServer = async (): Promise<Project[]> => {
+  try {
+    const response: Project[] = await new DefaultApi().getInitialData()
+    console.log('getInitialDataFromBackendServer response: ', response)
 
     return response
   } catch (err) {

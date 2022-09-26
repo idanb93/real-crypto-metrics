@@ -1,3 +1,5 @@
+import { Project } from '../interfaces/frontend'
+
 export const _projects: Project[] = [
   {
     id: 1,

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { Project, _projects } from './constants/constants'
 
 import Box from '@mui/material/Box'
 import InputLabel from '@mui/material/InputLabel'
@@ -9,11 +8,14 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Avatar from '@mui/material/Avatar'
 
 import Typography from '@mui/material/Typography'
-import { sendDataToBackendServer } from './services/Backend'
+import {
+  getInitialDataFromBackendServer,
+  sendDataToBackendServer
+} from './services/Backend'
 import { Accordion } from './accordion/Accordion'
 import { AccordionSummary } from './accordion/AccordionSummary'
 import { AccordionDetails } from './accordion/AccordionDetails'
-import { GithubContributors } from './swagger/stubs'
+import { GithubContributors, Project } from './swagger/stubs'
 
 export const Dashboard: React.FC = () => {
   const [contributors, setContributors] = useState<GithubContributors[]>([])
@@ -32,31 +34,24 @@ export const Dashboard: React.FC = () => {
     }
 
   useEffect(() => {
-    setProjects(_projects)
+    const getInitialData = async (): Promise<void> => {
+      try {
+        const res = await getInitialDataFromBackendServer()
+        setProjects(res)
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    getInitialData()
   }, [])
 
-  // useEffect(() => {
-  //   const getContributors = async (): Promise<GithubContributors[]> => {
-  //     try {
-  //       const res = await sendDataToBackendServer(selectedProjectOwner)
-  //       console.log('useEffect res', res)
-  //       return res
-  //     } catch (e) {
-  //       console.log(e)
-  //       return []
-  //     }
-  //   }
-
-  //   getContributors()
-  //     .then((res) => {
-  //       setContributors(res)
-  //     })
-  //     .catch((e) => console.log(e))
-  // }, [selectedProjectOwner])
-
-  const getContributors = async (projectOwner: string): Promise<void> => {
+  const getContributors = async (
+    projectOwner: string,
+    projects: Project[]
+  ): Promise<void> => {
     try {
-      const res = await sendDataToBackendServer(projectOwner)
+      const res = await sendDataToBackendServer(projectOwner, projects)
       setContributors(res)
     } catch (e) {
       console.log(e)
@@ -101,7 +96,9 @@ export const Dashboard: React.FC = () => {
                       value={element.owner}
                       onClick={() => {
                         setSelectedProjectOwner(element.owner)
-                        getContributors(element.owner).catch((e) => {})
+                        getContributors(element.owner, projects).catch(
+                          (e) => {}
+                        )
                       }}
                       style={{
                         display: 'flex',

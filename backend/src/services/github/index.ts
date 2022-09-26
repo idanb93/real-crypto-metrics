@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { GithubContributors } from '../../interfaces/github-interfaces'
+import { GithubContributors } from '../../interfaces/github'
 import { logger } from '../../logger'
 
 export const _getProjectContributers = async (
