@@ -24,3 +24,26 @@ export interface GithubContributors {
   site_admin: boolean
   contributions: number
 }
+
+// Data Transfer Object - when you see DTO it means that interface came from the backend.
+export interface GithubContributorsDTO {
+  login: string
+  id: number
+  nodeId: string
+  avatarUrl: string
+  gravatarId: string
+  url: string
+  htmlUrl: string
+  followersUrl: string
+  followingUrl: string
+  gistsUrl: string
+  starredUrl: string
+  subscriptionsUrl: string
+  organizationsUrl: string
+  reposUrl: string
+  eventsUrl: string
+  receivedEventsUrl: string
+  type: string
+  siteAdmin: boolean
+  contributions: number
+}

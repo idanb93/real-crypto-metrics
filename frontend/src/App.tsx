@@ -1,16 +1,20 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { Dashboard } from './Dashboard'
 import { Login } from './Login'
+import { Notification } from './SnackbarNotification'
 
 export const App: React.FC = () => {
   return (
     <>
       <BrowserRouter>
         <Login />
-        <Routes>
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
+        <Switch>
+          <Route path="/dashboard">
+            <Dashboard />
+          </Route>
+        </Switch>
+        <Notification />
       </BrowserRouter>
     </>
   )

@@ -1,9 +1,10 @@
-import { DefaultApi, GithubContributors, Project } from '../swagger/stubs'
+import { notificationStore } from '../stores/notificationsStore'
+import { DefaultApi, GithubContributorsDTO, Project } from '../swagger/stubs'
 
 export const sendDataToBackendServer = async (
   projectOwner: string,
   projects: Project[]
-): Promise<GithubContributors[]> => {
+): Promise<GithubContributorsDTO[]> => {
   try {
     // const response = await axios({
     //   method: 'POST',
@@ -14,7 +15,7 @@ export const sendDataToBackendServer = async (
     //     route
     //   }
     // })
-    const response: GithubContributors[] =
+    const response: GithubContributorsDTO[] =
       await new DefaultApi().getProjectContributors({
         owner: projectOwner,
         repo:
@@ -22,7 +23,9 @@ export const sendDataToBackendServer = async (
       })
 
     console.log('getProjectContributors response: ', response)
-
+    notificationStore.show({
+      message: 'Successfully fetched contributors of the project!'
+    })
     return response
   } catch (err) {
     return []

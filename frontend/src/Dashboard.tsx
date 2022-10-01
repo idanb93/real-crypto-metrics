@@ -15,10 +15,13 @@ import {
 import { Accordion } from './accordion/Accordion'
 import { AccordionSummary } from './accordion/AccordionSummary'
 import { AccordionDetails } from './accordion/AccordionDetails'
-import { GithubContributors, Project } from './swagger/stubs'
+import { GithubContributorsDTO, Project } from './swagger/stubs'
+import { useHistory } from 'react-router-dom'
 
 export const Dashboard: React.FC = () => {
-  const [contributors, setContributors] = useState<GithubContributors[]>([])
+  // const history = useHistory();
+  // history.push('/');
+  const [contributors, setContributors] = useState<GithubContributorsDTO[]>([])
   const [selectedContributor, setSelectedContributor] = useState('')
   const [projects, setProjects] = useState<Project[]>([])
   const [selectedProjectOwner, setSelectedProjectOwner] = useState('')

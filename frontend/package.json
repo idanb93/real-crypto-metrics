@@ -47,15 +47,19 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.19.3",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@mui/icons-material": "^5.10.6",
     "@mui/material": "^5.10.6",
+    "@types/react-router-dom": "^5.3.3",
     "axios": "^0.27.2",
     "isomorphic-fetch": "^3.0.0",
+    "mobx": "^6.6.2",
+    "mobx-react": "^7.5.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.4.1",
+    "react-router-dom": "^5.3.3",
     "url": "^0.11.0"
   }
 }

@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Route, SuccessResponse } from 'tsoa'
-import { GithubContributors, GithubRequest } from '../interfaces/github'
+import { GithubContributorsDTO, GithubRequest } from '../interfaces/github'
 import { logger } from '../logger'
 import { _getProjectContributers } from '../services/github'
 
@@ -10,16 +10,16 @@ export class GithubController extends Controller {
   // eslint-disable-next-line @typescript-eslint/space-before-function-paren
   public async getProjectContributors(
     @Body() requestBody: GithubRequest
-  ): Promise<GithubContributors[]> {
+  ): Promise<GithubContributorsDTO[]> {
     try {
-      const result: GithubContributors[] = await _getProjectContributers(
+      const result: GithubContributorsDTO[] = await _getProjectContributers(
         requestBody.owner,
         requestBody.repo
       )
 
       return result ?? []
     } catch (err) {
-      logger.info('unable to get projects contributors')
+      logger.error('unable to get projects contributors')
       throw err
     }
   }
