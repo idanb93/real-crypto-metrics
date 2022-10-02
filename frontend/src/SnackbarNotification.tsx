@@ -32,7 +32,7 @@ export const Notification = observer(() => {
       onClose={(e) => notificationStore.hide()}
       action={action}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      autoHideDuration={2000}
+      autoHideDuration={4000}
     >
       <Alert onClose={(e) => notificationStore.hide()} sx={{ width: '100%' }}>
         {notificationStore.message}

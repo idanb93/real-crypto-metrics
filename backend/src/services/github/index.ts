@@ -1,7 +1,9 @@
 import axios from 'axios'
 import {
   GithubContributors,
-  GithubContributorsDTO
+  GithubContributorsDTO,
+  GithubUsername,
+  GithubUsernameNotFound
 } from '../../interfaces/github'
 import { logger } from '../../logger'
 
@@ -28,6 +30,24 @@ export const _getProjectContributers = async (
     //   return request
     // })
     return resDTO
+  } catch (err) {
+    logger.error(err)
+    throw new Error('Could not fetch contributors')
+  }
+}
+
+export const _getGithubUsernameInfo = async (
+  contributor: string
+): Promise<GithubUsername> => {
+  try {
+    axios.interceptors.request.use((request) => {
+      logger.info(JSON.stringify(request.url))
+      logger.info('Starting Request', JSON.stringify(request, null, 2))
+      return request
+    })
+
+    const res = await axios.get(`https://api.github.com/users/${contributor}`)
+    return res.data
   } catch (err) {
     logger.error(err)
     throw new Error('Could not fetch contributors')

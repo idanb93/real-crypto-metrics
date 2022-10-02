@@ -10,12 +10,13 @@ import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import {
   getInitialDataFromBackendServer,
-  sendDataToBackendServer
+  sendDataToBackendServer,
+  getRecentTweetsByContributor
 } from './services/Backend'
 import { Accordion } from './accordion/Accordion'
 import { AccordionSummary } from './accordion/AccordionSummary'
 import { AccordionDetails } from './accordion/AccordionDetails'
-import { GithubContributorsDTO, Project } from './swagger/stubs'
+import { GithubContributorsDTO, Project, RecentTweets } from './swagger/stubs'
 import { useHistory } from 'react-router-dom'
 
 export const Dashboard: React.FC = () => {
@@ -25,6 +26,9 @@ export const Dashboard: React.FC = () => {
   const [selectedContributor, setSelectedContributor] = useState('')
   const [projects, setProjects] = useState<Project[]>([])
   const [selectedProjectOwner, setSelectedProjectOwner] = useState('')
+  const [tweetsByContributor, setTweetsByContributor] = useState<
+    RecentTweets[]
+  >([])
   const [expanded, setExpanded] = useState<string | false>('panel1')
 
   const handleChooseContributor = (event: SelectChangeEvent): void => {
@@ -49,7 +53,7 @@ export const Dashboard: React.FC = () => {
     getInitialData()
   }, [])
 
-  const getContributors = async (
+  const handleChoosingProject = async (
     projectOwner: string,
     projects: Project[]
   ): Promise<void> => {
@@ -61,123 +65,287 @@ export const Dashboard: React.FC = () => {
     }
   }
 
+  const handleChoosingContributor = async (
+    contributorName: string
+  ): Promise<void> => {
+    try {
+      const res = await getRecentTweetsByContributor(contributorName)
+      console.log(res)
+      setTweetsByContributor(res?.data)
+      return
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   return (
-    <>
-      <Accordion
-        expanded={expanded === 'panel1'}
-        onChange={handleAccordionDrop('panel1')}
+    <div
+      id="page-container"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'side-menu navbar',
+        gridTemplateRows: 'navbar main'
+      }}
+    >
+      <div
+        id="navbar"
+        style={{
+          height: '10vh',
+          border: '0.5vh solid green',
+          background: 'rgb(96, 96, 96)'
+        }}
+      ></div>
+      <div
+        id="main-page"
+        style={{
+          display: 'flex'
+        }}
       >
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Typography>Projects</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'start',
-              marginLeft: '1vw'
+        <div
+          id="side-menu"
+          style={{
+            background: 'rgb(96, 96, 96)',
+            minHeight: '100vh',
+            width: '15%',
+            border: '0.5vh solid red',
+            float: 'left'
+          }}
+        ></div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            margin: '2vh 2vw 2vh 2vw',
+            minHeight: '100vh',
+            width: '85%',
+            background: 'lightgrey'
+          }}
+        >
+          <Box
+            sx={{
+              width: 260,
+              maxHeight: '10%',
+              margin: '2vh 2vw 2vh 2vw',
+              background: 'whitesmoke'
             }}
           >
-            <Box sx={{ width: 260 }}>
-              <FormControl fullWidth>
-                <InputLabel
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                  id="demo-simple-select-label"
-                >
-                  Projects
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={selectedProjectOwner}
-                  label="Projects"
-                >
-                  {projects.map((element, index) => (
-                    <MenuItem
-                      key={index}
-                      value={element.owner}
-                      onClick={() => {
-                        setSelectedProjectOwner(element.owner)
-                        getContributors(element.owner, projects).catch(
-                          (e) => {}
-                        )
-                      }}
+            <FormControl sx={{ width: 260 }}>
+              <InputLabel
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between'
+                }}
+                id="demo-simple-select-label"
+              >
+                Projects
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedProjectOwner}
+                label="Projects"
+              >
+                {projects.map((element, index) => (
+                  <MenuItem
+                    key={index}
+                    value={element.owner}
+                    onClick={() => {
+                      setSelectedProjectOwner(element.owner)
+                      handleChoosingProject(element.owner, projects).catch(
+                        (e) => {}
+                      )
+                    }}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between'
+                    }}
+                  >
+                    <div
                       style={{
                         display: 'flex',
-                        justifyContent: 'space-between'
+                        justifyContent: 'space-between',
+                        width: '11vw'
                       }}
                     >
                       <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          width: '11vw'
-                        }}
-                      >
-                        <div
-                          style={{ display: 'flex', alignItems: 'center' }}
-                        >{`${element.name}`}</div>
-                        <div>
-                          <Avatar alt="logo" src={element.logo} />
-                        </div>
+                        style={{ display: 'flex', alignItems: 'center' }}
+                      >{`${element.name}`}</div>
+                      <div>
+                        <Avatar alt="logo" src={element.logo} />
                       </div>
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
+                    </div>
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
 
-            {contributors.length > 0 ? (
-              <Box sx={{ width: 260, marginLeft: '1vw' }}>
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    Contributors
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={selectedContributor}
-                    label="Contributors"
-                    onChange={handleChooseContributor}
-                  >
-                    {contributors.map((element, index) => (
-                      <MenuItem
-                        key={index}
-                        value={element.login}
-                        onClick={() => {
-                          window.open(element.htmlUrl)
-                        }}
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-between'
-                        }}
-                      >
-                        <div
+          {contributors.length > 0 ? (
+            <>
+              <div
+                id="Developers Churn Visulaization"
+                style={{
+                  height: '40vh',
+                  border: '0.5vh solid grey',
+                  margin: '2vh 2vw 2vh 2vw',
+                  background: 'whitesmoke'
+                }}
+              >
+                <h1>Developers Churn</h1>
+              </div>
+
+              <div
+                id="Decentralization"
+                style={{
+                  height: '40vh',
+                  border: '0.5vh solid grey',
+                  margin: '2vh 2vw 2vh 2vw',
+                  background: 'whitesmoke'
+                }}
+              >
+                <h1>Validator Count: </h1>
+              </div>
+
+              <div
+                id="Performance Analytics"
+                style={{
+                  height: '40vh',
+                  border: '0.5vh solid grey',
+                  margin: '2vh 2vw 2vh 2vw',
+                  background: 'whitesmoke'
+                }}
+              >
+                <h1>Transactions Per Second</h1>
+                <h1>Consensus Protocol</h1>
+                <h1>Latency</h1>
+                <h1>isScalable</h1>
+                <h1>isIntroprable</h1>
+                <h1>Immediate Finality</h1>
+              </div>
+
+              <div
+                style={{
+                  height: '20vh',
+                  border: '0.5vh solid black',
+                  margin: '2vh 2vw 2vh 2vw',
+                  background: 'whitesmoke'
+                }}
+              >
+                <div>
+                  <h1>Contributors: </h1>
+                </div>
+                <Box
+                  sx={{
+                    height: '100%',
+                    marginLeft: '1vw'
+                  }}
+                  style={{
+                    alignItems: 'center'
+                  }}
+                >
+                  <FormControl sx={{ width: 260, height: 80 }}>
+                    <InputLabel id="demo-simple-select-label">
+                      Contributors
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={selectedContributor}
+                      label="Contributors"
+                      onChange={handleChooseContributor}
+                      style={{ justifyContent: 'center' }}
+                    >
+                      {contributors.map((element, index) => (
+                        <MenuItem
+                          key={index}
+                          value={element.login}
+                          onClick={() => {
+                            // window.open(element.htmlUrl)
+                            handleChoosingContributor(element.login).catch(
+                              (e) => {}
+                            )
+                          }}
                           style={{
                             display: 'flex',
-                            justifyContent: 'space-between',
-                            width: '11vw'
+                            justifyContent: 'space-between'
                           }}
                         >
                           <div
-                            style={{ display: 'flex', alignItems: 'center' }}
-                          >{`${element.login}`}</div>
-                          <div>
-                            <Avatar alt="login_name" src={element.avatarUrl} />
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              width: '11vw'
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center'
+                              }}
+                            >{`${element.login}`}</div>
+                            <div>
+                              <Avatar
+                                alt="login_name"
+                                src={element.avatarUrl}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Box>
-            ) : (
-              ''
-            )}
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
-    </>
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+              </div>
+            </>
+          ) : (
+            ''
+          )}
+
+          {selectedContributor !== '' && tweetsByContributor.length > 0 ? (
+            <>
+              <div
+                style={{
+                  margin: '2vh 2vw 2vh 2vw'
+                }}
+              >
+                <h1>Recent Tweets by {selectedContributor}</h1>
+              </div>
+              <div
+                id="tweets-container"
+                style={{
+                  margin: '2vh 2vw 2vh 2vw',
+                  border: '0.5vh solid cyan',
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
+                  gridTemplateRows: '1fr 1fr',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '80vw',
+                  height: '40vh',
+                  background: 'whitesmoke'
+                }}
+              >
+                {tweetsByContributor.map((tweet) => (
+                  <div
+                    style={{
+                      height: '15vh',
+                      width: '12vw',
+                      border: '0.3vh solid pink',
+                      textAlign: 'center',
+                      margin: '1vh 1vw 1vh 2vw',
+                      background: 'whitesmoke'
+                    }}
+                  >
+                    <h5>{tweet.text}</h5>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            ''
+          )}
+        </div>
+      </div>
+    </div>
   )
 }
