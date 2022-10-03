@@ -1,13 +1,13 @@
 import axios from 'axios'
-import { NoTweetsResult, RecentTweets } from '../../interfaces/twitter'
+import { TwitterResponse } from '../../interfaces/twitter'
 import { logger } from '../../logger'
 import dotenv from 'dotenv'
 
 dotenv.config()
 
 export const _getRecentTweetsByUsername = async (
-  twitterUsername: string
-): Promise<RecentTweets[] | {}> => {
+  twitterUsername: string | null
+): Promise<TwitterResponse> => {
   try {
     const config = {
       headers: {
@@ -16,21 +16,18 @@ export const _getRecentTweetsByUsername = async (
       }
     }
 
-    let res: any = []
+    let twitterResponse: TwitterResponse = {}
 
     if (twitterUsername !== null) {
-      res = await axios.get(
+      const res = await axios.get(
         `https://api.twitter.com/2/tweets/search/recent?query=from:${twitterUsername}`,
         config
       )
-      return res.data
-    } else {
-      return {
-        data: []
-      }
+      twitterResponse = res.data
     }
+    return twitterResponse
   } catch (err) {
     logger.error(err)
-    throw new Error('Could not fetch tweetsByContributor')
+    throw new Error('There was a problem trying to get recent tweets')
   }
 }

@@ -2,8 +2,7 @@ import axios from 'axios'
 import {
   GithubContributors,
   GithubContributorsDTO,
-  GithubUsername,
-  GithubUsernameNotFound
+  GithubUsername
 } from '../../interfaces/github'
 import { logger } from '../../logger'
 
@@ -24,11 +23,6 @@ export const _getProjectContributers = async (
     const resDTO: GithubContributorsDTO[] = res.data.map(
       (obj: GithubContributors) => convertGithubContributorsToDTOObj(obj)
     )
-    // axios.interceptors.request.use((request) => {
-    //   logger.info(JSON.stringify(request.url))
-    //   logger.info('Starting Request', JSON.stringify(request, null, 2))
-    //   return request
-    // })
     return resDTO
   } catch (err) {
     logger.error(err)
@@ -41,8 +35,7 @@ export const _getGithubUsernameInfo = async (
 ): Promise<GithubUsername> => {
   try {
     axios.interceptors.request.use((request) => {
-      logger.info(JSON.stringify(request.url))
-      logger.info('Starting Request', JSON.stringify(request, null, 2))
+      logger.info(JSON.stringify(request, null, 2))
       return request
     })
 

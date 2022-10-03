@@ -3,7 +3,7 @@ import {
   DefaultApi,
   GithubContributorsDTO,
   Project,
-  RecentTweets
+  TwitterResponse
 } from '../swagger/stubs'
 
 export const sendDataToBackendServer = async (
@@ -30,27 +30,15 @@ export const sendDataToBackendServer = async (
 
 export const getRecentTweetsByContributor = async (
   contributorName: string
-): Promise<RecentTweets[]> => {
+): Promise<TwitterResponse> => {
   try {
-    const response: RecentTweets[] =
-      await new DefaultApi().getTweetsByContributor({
-        contributor: contributorName
-      })
-    console.log('getTweetsByContributor response: ', response)
-    if (response.data.length > 0) {
-      notificationStore.show({
-        message:
-          'Successfully fetched recent tweets of the contributor of the project!'
-      })
-    } else {
-      notificationStore.show({
-        message:
-          'Contributor GitHub account is not associated with their Twitter account or Contributor did not tweet'
-      })
-    }
-    return response
+    const res: TwitterResponse = await new DefaultApi().getTweetsByContributor({
+      contributor: contributorName
+    })
+    console.log('getRecentTweetsByContributor response: ', res)
+    return res
   } catch (err) {
-    return []
+    throw new Error('Error fetching recent tweets by contributor')
   }
 }
 

@@ -4,4 +4,9 @@ export interface Project {
   logo: string
   owner: string
   repo: string
+  transactionsPerSecond: number
+  consensusAlgorithm: string
+  latency: number
+  isScalable: boolean
+  isInteroperable: boolean
 }

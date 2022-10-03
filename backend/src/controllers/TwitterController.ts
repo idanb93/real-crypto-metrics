@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Route, SuccessResponse } from 'tsoa'
-import { RecentTweets, RepoContributor } from '../interfaces/twitter'
+import { GithubUsername } from '../interfaces/github'
+import { RepoContributor, TwitterResponse } from '../interfaces/twitter'
 import { logger } from '../logger'
 import { _getGithubUsernameInfo } from '../services/github'
 import { _getRecentTweetsByUsername } from '../services/twitter'
@@ -11,15 +12,15 @@ export class TwitterController extends Controller {
   // eslint-disable-next-line @typescript-eslint/space-before-function-paren
   public async getTweetsByContributor(
     @Body() requestBody: RepoContributor
-  ): Promise<RecentTweets[] | {}> {
+  ): Promise<TwitterResponse> {
     try {
-      const githubUsernameInfo = await _getGithubUsernameInfo(
+      const githubUsernameInfo: GithubUsername = await _getGithubUsernameInfo(
         requestBody.contributor
       )
-      const result: RecentTweets[] | {} = await _getRecentTweetsByUsername(
+      const res: TwitterResponse = await _getRecentTweetsByUsername(
         githubUsernameInfo?.twitter_username
       )
-      return result
+      return res
     } catch (err) {
       logger.error('unable to get projects contributors')
       throw err

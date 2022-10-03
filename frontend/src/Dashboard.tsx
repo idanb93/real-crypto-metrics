@@ -16,8 +16,14 @@ import {
 import { Accordion } from './accordion/Accordion'
 import { AccordionSummary } from './accordion/AccordionSummary'
 import { AccordionDetails } from './accordion/AccordionDetails'
-import { GithubContributorsDTO, Project, RecentTweets } from './swagger/stubs'
+import {
+  GithubContributorsDTO,
+  Project,
+  RecentTweetsData,
+  TwitterResponse
+} from './swagger/stubs'
 import { useHistory } from 'react-router-dom'
+import { notificationStore } from './stores/notificationsStore'
 
 export const Dashboard: React.FC = () => {
   // const history = useHistory();
@@ -27,7 +33,7 @@ export const Dashboard: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([])
   const [selectedProjectOwner, setSelectedProjectOwner] = useState('')
   const [tweetsByContributor, setTweetsByContributor] = useState<
-    RecentTweets[]
+    RecentTweetsData[]
   >([])
   const [expanded, setExpanded] = useState<string | false>('panel1')
 
@@ -69,10 +75,28 @@ export const Dashboard: React.FC = () => {
     contributorName: string
   ): Promise<void> => {
     try {
-      const res = await getRecentTweetsByContributor(contributorName)
-      console.log(res)
-      setTweetsByContributor(res?.data)
-      return
+      const res: TwitterResponse = await getRecentTweetsByContributor(
+        contributorName
+      )
+
+      if (res?.data !== undefined) {
+        setTweetsByContributor(res?.data)
+        console.log(res?.meta)
+        notificationStore.show({
+          message: `Successfully fetched ${res?.meta?.result_count} recent tweets`
+        })
+      } else if (res?.meta !== undefined) {
+        setTweetsByContributor([])
+        notificationStore.show({
+          message: 'Contributor did not tweet'
+        })
+      } else {
+        setTweetsByContributor([])
+        notificationStore.show({
+          message:
+            'Contributor GitHub account is not associated with their Twitter account'
+        })
+      }
     } catch (e) {
       console.log(e)
     }
@@ -215,12 +239,60 @@ export const Dashboard: React.FC = () => {
                   background: 'whitesmoke'
                 }}
               >
-                <h1>Transactions Per Second</h1>
-                <h1>Consensus Protocol</h1>
-                <h1>Latency</h1>
-                <h1>isScalable</h1>
-                <h1>isIntroprable</h1>
-                <h1>Immediate Finality</h1>
+                <h2>
+                  Transactions Per Second:{' '}
+                  {
+                    projects.find(
+                      (projectFromBackend) =>
+                        projectFromBackend.owner === selectedProjectOwner
+                    )?.transactionsPerSecond
+                  }
+                </h2>
+                <h2>
+                  Consensus Protocol:{' '}
+                  {
+                    projects.find(
+                      (projectFromBackend) =>
+                        projectFromBackend.owner === selectedProjectOwner
+                    )?.consensusAlgorithm
+                  }
+                </h2>
+                <h2>
+                  Latency:{' '}
+                  {
+                    projects.find(
+                      (projectFromBackend) =>
+                        projectFromBackend.owner === selectedProjectOwner
+                    )?.latency
+                  }
+                </h2>
+                <h2>
+                  isScalable:{' '}
+                  {projects.find(
+                    (projectFromBackend) =>
+                      projectFromBackend.owner === selectedProjectOwner
+                  )?.isScalable
+                    ? 'Yes'
+                    : 'No'}
+                </h2>
+                <h2>
+                  isIntroprable:{' '}
+                  {projects.find(
+                    (projectFromBackend) =>
+                      projectFromBackend.owner === selectedProjectOwner
+                  )?.isInteroperable
+                    ? 'Yes'
+                    : 'No'}
+                </h2>
+                <h2>
+                  Immediate Finality:{' '}
+                  {projects.find(
+                    (projectFromBackend) =>
+                      projectFromBackend.owner === selectedProjectOwner
+                  )?.isInteroperable
+                    ? 'Yes'
+                    : 'No'}
+                </h2>
               </div>
 
               <div
