@@ -142,7 +142,7 @@ export const Dashboard: React.FC = () => {
             margin: '2vh 2vw 2vh 2vw',
             minHeight: '100vh',
             width: '85%',
-            background: 'lightgrey'
+            background: 'rgb(249,249,249)'
           }}
         >
           <Box
@@ -150,7 +150,7 @@ export const Dashboard: React.FC = () => {
               width: 260,
               maxHeight: '10%',
               margin: '2vh 2vw 2vh 2vw',
-              background: 'whitesmoke'
+              background: 'white'
             }}
           >
             <FormControl sx={{ width: 260 }}>
@@ -210,9 +210,9 @@ export const Dashboard: React.FC = () => {
                 id="Developers Churn Visulaization"
                 style={{
                   height: '40vh',
-                  border: '0.5vh solid grey',
+                  borderRadius: '5vh',
                   margin: '2vh 2vw 2vh 2vw',
-                  background: 'whitesmoke'
+                  background: 'white'
                 }}
               >
                 <h1>Developers Churn</h1>
@@ -222,9 +222,9 @@ export const Dashboard: React.FC = () => {
                 id="Decentralization"
                 style={{
                   height: '40vh',
-                  border: '0.5vh solid grey',
+                  borderRadius: '5vh',
                   margin: '2vh 2vw 2vh 2vw',
-                  background: 'whitesmoke'
+                  background: 'white'
                 }}
               >
                 <h1>Validator Count: </h1>
@@ -234,11 +234,20 @@ export const Dashboard: React.FC = () => {
                 id="Performance Analytics"
                 style={{
                   height: '40vh',
-                  border: '0.5vh solid grey',
+                  borderRadius: '5vh',
                   margin: '2vh 2vw 2vh 2vw',
-                  background: 'whitesmoke'
+                  background: 'white'
                 }}
               >
+                <h2>
+                  Type:{' '}
+                  {
+                    projects.find(
+                      (projectFromBackend) =>
+                        projectFromBackend.owner === selectedProjectOwner
+                    )?.type
+                  }
+                </h2>
                 <h2>
                   Transactions Per Second:{' '}
                   {
@@ -298,9 +307,9 @@ export const Dashboard: React.FC = () => {
               <div
                 style={{
                   height: '20vh',
-                  border: '0.5vh solid black',
+                  borderRadius: '5vh',
                   margin: '2vh 2vw 2vh 2vw',
-                  background: 'whitesmoke'
+                  background: 'white'
                 }}
               >
                 <div>
@@ -385,30 +394,29 @@ export const Dashboard: React.FC = () => {
               <div
                 id="tweets-container"
                 style={{
-                  margin: '2vh 2vw 2vh 2vw',
-                  border: '0.5vh solid cyan',
+                  // margin: '2vh 1vw 2vh 1vw',
+                  borderRadius: '5vh',
                   display: 'grid',
-                  gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
-                  gridTemplateRows: '1fr 1fr',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  gridTemplateColumns: '1fr 1fr 1fr',
+                  gridTemplateRows: '1fr 1fr 1fr 1fr',
                   width: '80vw',
-                  height: '40vh',
-                  background: 'whitesmoke'
+                  background: 'white'
                 }}
               >
                 {tweetsByContributor.map((tweet) => (
                   <div
                     style={{
-                      height: '15vh',
-                      width: '12vw',
-                      border: '0.3vh solid pink',
-                      textAlign: 'center',
-                      margin: '1vh 1vw 1vh 2vw',
-                      background: 'whitesmoke'
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '18vh',
+                      width: '20vw',
+                      borderRadius: '3vh',
+                      margin: '1vh 1vw 1vh 1vw',
+                      background: 'rgb(249,249,249)'
                     }}
                   >
-                    <h5>{tweet.text}</h5>
+                    <p style={{ margin: '2vh 2vw 2vh 2vw' }}>{tweet.text}</p>
                   </div>
                 ))}
               </div>

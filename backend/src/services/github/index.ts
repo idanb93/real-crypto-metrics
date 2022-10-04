@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import {
   GithubContributors,
   GithubContributorsDTO,
@@ -10,8 +10,26 @@ export const _getProjectContributers = async (
   owner: string,
   repo: string
 ): Promise<GithubContributorsDTO[]> => {
+  axios.interceptors.response.use(
+    (response: AxiosResponse) => {
+      // logger.info(JSON.stringify(response.data, null, 2))
+      return response
+    },
+    (error: AxiosError) => {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      // logger.error(`HTTP Response Status Code: ${error.response.status}`)
+      if (error.response != null) {
+        logger.error(error)
+        logger.error(error.response.statusText)
+        logger.error(error.message)
+        logger.error(JSON.stringify(error.response.headers, null, 2))
+        logger.error(JSON.stringify(error.response.data, null, 2))
+      }
+    }
+  )
+
   try {
-    const res = await axios.get(
+    const res: AxiosResponse = await axios.get(
       `https://api.github.com/repos/${owner}/${repo}/contributors`,
       {
         params: {
@@ -20,25 +38,44 @@ export const _getProjectContributers = async (
         }
       }
     )
-    const resDTO: GithubContributorsDTO[] = res.data.map(
+
+    const resDTO: GithubContributorsDTO[] = res?.data.map(
       (obj: GithubContributors) => convertGithubContributorsToDTOObj(obj)
     )
     return resDTO
   } catch (err) {
     logger.error(err)
-    throw new Error('Could not fetch contributors')
+    throw err
   }
 }
 
 export const _getGithubUsernameInfo = async (
   contributor: string
 ): Promise<GithubUsername> => {
-  try {
-    axios.interceptors.request.use((request) => {
-      logger.info(JSON.stringify(request, null, 2))
-      return request
-    })
+  axios.interceptors.request.use((request) => {
+    logger.info('Request _getGithubUsernameInfo: ')
+    // logger.info(JSON.stringify(request, null, 2))
+    return request
+  })
 
+  axios.interceptors.response.use(
+    (response: AxiosResponse) => {
+      logger.info('Response _getGithubUsernameInfo: ')
+      // logger.info(JSON.stringify(response.data, null, 2))
+      return response
+    },
+    (error: AxiosError) => {
+      if (error.response != null) {
+        logger.error(error)
+        logger.error(error.response.statusText)
+        logger.error(error.message)
+        logger.error(JSON.stringify(error.response.headers, null, 2))
+        logger.error(JSON.stringify(error.response.data, null, 2))
+      }
+    }
+  )
+
+  try {
     const res = await axios.get(`https://api.github.com/users/${contributor}`)
     return res.data
   } catch (err) {

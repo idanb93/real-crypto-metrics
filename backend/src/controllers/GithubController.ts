@@ -5,7 +5,7 @@ import { _getProjectContributers } from '../services/github'
 
 @Route('/api')
 export class GithubController extends Controller {
-  @SuccessResponse('201', 'Created') // Custom success response
+  @SuccessResponse('201', 'Created')
   @Post('/github/contributors')
   // eslint-disable-next-line @typescript-eslint/space-before-function-paren
   public async getProjectContributors(
@@ -19,7 +19,9 @@ export class GithubController extends Controller {
 
       return result ?? []
     } catch (err) {
-      logger.error('unable to get projects contributors')
+      if (err instanceof Error) {
+        logger.error(err.message)
+      }
       throw err
     }
   }
