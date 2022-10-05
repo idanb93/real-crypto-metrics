@@ -81,7 +81,6 @@ export const Dashboard: React.FC = () => {
 
       if (res?.data !== undefined) {
         setTweetsByContributor(res?.data)
-        console.log(res?.meta)
         notificationStore.show({
           message: `Successfully fetched ${res?.meta?.result_count} recent tweets`
         })
@@ -394,12 +393,12 @@ export const Dashboard: React.FC = () => {
               <div
                 id="tweets-container"
                 style={{
-                  // margin: '2vh 1vw 2vh 1vw',
+                  margin: '2vh 1vw 2vh 1vw',
                   borderRadius: '5vh',
                   display: 'grid',
+                  alignSelf: 'center',
                   gridTemplateColumns: '1fr 1fr 1fr',
                   gridTemplateRows: '1fr 1fr 1fr 1fr',
-                  width: '80vw',
                   background: 'white'
                 }}
               >

@@ -18,11 +18,18 @@ export const sendDataToBackendServer = async (
           projects.find((project) => project.owner === projectOwner)?.repo ?? ''
       })
 
-    console.log('getProjectContributors response: ', response)
+    console.log(
+      `getProjectContributors for ${projectOwner} response: `,
+      response.filter((contributor) => contributor.type === 'User')
+    )
+
     notificationStore.show({
-      message: 'Successfully fetched contributors of the project!'
+      message: `Successfully fetched contributors of ${projectOwner}/${
+        projects.find((project) => project.owner === projectOwner)?.repo ?? ''
+      }`
     })
-    return response
+
+    return response.filter((contributor) => contributor.type === 'User')
   } catch (err) {
     return []
   }

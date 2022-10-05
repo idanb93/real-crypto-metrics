@@ -191,7 +191,7 @@ export const _projects: Project[] = [
     type: 'ERC-20 Token',
     logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7278.png',
     owner: 'aave',
-    repo: ' aave-v3-core',
+    repo: 'aave-v3-core',
     transactionsPerSecond: '360',
     consensusAlgorithm: 'PoS',
     latency: 40,

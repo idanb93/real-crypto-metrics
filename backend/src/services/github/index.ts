@@ -53,14 +53,14 @@ export const _getGithubUsernameInfo = async (
   contributor: string
 ): Promise<GithubUsername> => {
   axios.interceptors.request.use((request) => {
-    logger.info('Request _getGithubUsernameInfo: ')
+    // logger.info('Request _getGithubUsernameInfo: ')
     // logger.info(JSON.stringify(request, null, 2))
     return request
   })
 
   axios.interceptors.response.use(
     (response: AxiosResponse) => {
-      logger.info('Response _getGithubUsernameInfo: ')
+      // logger.info('Response _getGithubUsernameInfo: ')
       // logger.info(JSON.stringify(response.data, null, 2))
       return response
     },
