@@ -11,8 +11,7 @@ export const _getRecentTweetsByUsername = async (
   try {
     const config = {
       headers: {
-        Authorization:
-          'Bearer AAAAAAAAAAAAAAAAAAAAAKMDhgEAAAAAfuqBfcbgNoR0hNfL1M%2F9nwZRBYc%3DC1FjTjQtZf0j5sSdbryUtybxtJCWKGRYIezJuPRkowNIgLlLdF'
+        Authorization: `Bearer ${process.env.TWITTER_TOKEN ?? ''}`
       }
     }
 
