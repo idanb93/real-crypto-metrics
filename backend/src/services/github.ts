@@ -3,8 +3,8 @@ import {
   GithubContributors,
   GithubContributorsDTO,
   GithubUsername
-} from '../../interfaces/github'
-import { logger } from '../../logger'
+} from '../interfaces/github'
+import { logger } from '../logger'
 import dotenv from 'dotenv'
 
 dotenv.config()

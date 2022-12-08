@@ -238,12 +238,25 @@ export const _projects: Project[] = [
     isInteroperable: false
   },
   {
-    id: 18,
+    id: 19,
     name: 'Arweave',
     type: 'Coin',
     logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/5632.png',
     owner: 'ArweaveTeam',
     repo: 'arweave',
+    transactionsPerSecond: '1,000',
+    consensusAlgorithm: 'PoS',
+    latency: 1000,
+    isScalable: true,
+    isInteroperable: false
+  },
+  {
+    id: 20,
+    name: 'Ziliqa',
+    type: 'Coin',
+    logo: 'https://s2.coinmarketcap.com/static/img/coins/64x64/5632.png',
+    owner: 'Zilliqa',
+    repo: 'Zilliqa',
     transactionsPerSecond: '1,000',
     consensusAlgorithm: 'PoS',
     latency: 1000,
