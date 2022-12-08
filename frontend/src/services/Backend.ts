@@ -6,7 +6,7 @@ import {
   TwitterResponse
 } from '../swagger/stubs'
 
-export const sendDataToBackendServer = async (
+export const getProjectsContributors = async (
   projectOwner: string,
   projects: Project[]
 ): Promise<GithubContributorsDTO[]> => {
@@ -49,10 +49,10 @@ export const getRecentTweetsByContributor = async (
   }
 }
 
-export const getInitialDataFromBackendServer = async (): Promise<Project[]> => {
+export const getProjectsInitialData = async (): Promise<Project[]> => {
   try {
-    const response: Project[] = await new DefaultApi().getInitialData()
-    console.log('getInitialDataFromBackendServer response: ', response)
+    const response: Project[] = await new DefaultApi().getProjectsInitialData()
+    console.log('getProjectsInitialData response: ', response)
 
     return response
   } catch (err) {
